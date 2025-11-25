@@ -7,7 +7,8 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const getGeminiAnalysis = async (effect: EffectItem, mode: 'explain' | 'code'): Promise<string> => {
   try {
-    const modelId = 'gemini-2.5-flash';
+    // Use gemini-3-pro-preview for coding tasks (Complex Text Tasks) and gemini-2.5-flash for explanations (Basic Text Tasks)
+    const modelId = mode === 'code' ? 'gemini-3-pro-preview' : 'gemini-2.5-flash';
     
     let prompt = '';
     if (mode === 'explain') {
