@@ -690,19 +690,19 @@ const TransitionSet: React.FC<TransitionSetProps> = ({ id, title, defaultBefore,
 
 const TransitionEffects: React.FC = () => {
   return (
-    <div className="w-full space-y-16">
+    <div className="w-[65%] mx-auto space-y-16">
         <div className="flex flex-col gap-16">
             <TransitionSet 
               id={0} 
               title="Comparison Set 1" 
-              defaultBefore="https://raw.githubusercontent.com/jamin1981/Axio-Effects/main/3.png"
-              defaultAfter="https://raw.githubusercontent.com/jamin1981/Axio-Effects/main/5.png"
+              defaultBefore="https://raw.githubusercontent.com/jamin1981/Axio-Effects/refs/heads/main/3.png"
+              defaultAfter="https://raw.githubusercontent.com/jamin1981/Axio-Effects/refs/heads/main/4.png"
             />
             <TransitionSet 
               id={1} 
               title="Comparison Set 2" 
-              defaultBefore="https://raw.githubusercontent.com/jamin1981/Axio-Effects/main/4.png"
-              defaultAfter="https://raw.githubusercontent.com/jamin1981/Axio-Effects/main/6.mp4"
+              defaultBefore="https://raw.githubusercontent.com/jamin1981/Axio-Effects/refs/heads/main/5.png"
+              defaultAfter="https://raw.githubusercontent.com/jamin1981/Axio-Effects/refs/heads/main/6.mp4"
             />
         </div>
     </div>
