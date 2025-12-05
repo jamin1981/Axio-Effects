@@ -172,7 +172,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         <div className="relative group w-full">
             <div className={`aspect-video rounded-xl border-2 border-dashed flex flex-col items-center justify-center transition-all overflow-hidden ${images.before ? 'border-indigo-500 bg-zinc-900/50' : 'border-zinc-700 hover:border-zinc-500 hover:bg-zinc-800/30'}`}>
                 {images.before ? (
-                    <img src={images.before} alt="Before" className="w-full h-full object-cover" />
+                    <img src={images.before} alt="Before" className="w-full h-full object-cover" crossOrigin="anonymous" />
                 ) : (
                     <div className="space-y-2">
                         <ImageIcon className="w-8 h-8 mx-auto text-zinc-500" />
@@ -210,9 +210,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                             muted 
                             loop 
                             playsInline 
+                            crossOrigin="anonymous"
                         />
                     ) : (
-                        <img src={images.after} alt="After" className="w-full h-full object-cover" />
+                        <img src={images.after} alt="After" className="w-full h-full object-cover" crossOrigin="anonymous" />
                     )
                 ) : (
                     <div className="space-y-2">
@@ -289,6 +290,7 @@ const TransitionStage: React.FC<TransitionStageProps> = ({
 
         if (ctx) {
             const img = new Image();
+            img.crossOrigin = "Anonymous"; // Allow CORS for GitHub raw images
             img.src = beforeSrc;
             img.onload = () => {
                 drawImageCover(ctx, img, canvas.width, canvas.height);
@@ -383,7 +385,8 @@ const TransitionStage: React.FC<TransitionStageProps> = ({
                 autoPlay 
                 muted 
                 loop 
-                playsInline 
+                playsInline
+                crossOrigin="anonymous"
             />
           );
       }
@@ -392,6 +395,7 @@ const TransitionStage: React.FC<TransitionStageProps> = ({
             src={afterSrc} 
             alt="After" 
             className={className} 
+            crossOrigin="anonymous"
         />
       );
   };
@@ -427,6 +431,7 @@ const TransitionStage: React.FC<TransitionStageProps> = ({
                 src={beforeSrc} 
                 alt="Before" 
                 className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none" 
+                crossOrigin="anonymous"
             />
 
             {/* Top: After Image (Revealed by CSS styles) */}
@@ -585,9 +590,23 @@ interface TransitionSetProps {
 }
 
 const TransitionSet: React.FC<TransitionSetProps> = ({ id, title, defaultBefore, defaultAfter }) => {
-  const [images, setImages] = useState<ImageState>({ before: null, after: null });
+  const [images, setImages] = useState<ImageState>({ 
+    before: defaultBefore || null, 
+    after: defaultAfter || null 
+  });
+  
+  // Sync state with props to ensure defaults load correctly (especially on hot reload or prop update)
+  useEffect(() => {
+    if (defaultBefore || defaultAfter) {
+      setImages(prev => ({
+        before: defaultBefore || prev.before,
+        after: defaultAfter || prev.after
+      }));
+    }
+  }, [defaultBefore, defaultAfter]);
+
   const [mode, setMode] = useState<TransitionMode>(TransitionMode.SLIDER);
-  const [progress, setProgress] = useState(50);
+  const [progress, setProgress] = useState(0); // Default to all the way to left
   
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -607,7 +626,7 @@ const TransitionSet: React.FC<TransitionSetProps> = ({ id, title, defaultBefore,
 
   const clearImages = () => {
       setImages({ before: null, after: null });
-      setProgress(50);
+      setProgress(0);
   };
 
   const hasImages = images.before && images.after;
